@@ -89,12 +89,9 @@ public class MemberUpdateServlet extends HttpServlet {
 		PreparedStatement stmt = null;
 		
 		try {
+			ServletContext sc = this.getServletContext();
 			Class.forName(this.getInitParameter("driver"));
-			conn = DriverManager.getConnection(
-					
-					this.getInitParameter("url"),
-					this.getInitParameter("username"),
-					this.getInitParameter("password"));
+			conn = (Connection) sc.getAttribute("Conn");
 		
 			
 			stmt =conn.prepareStatement("UPDATE MEMBERS SET EMAIL=?, MNAME=?, MOD_DATE=now()" + " WHERE MNO=?");
@@ -111,7 +108,7 @@ public class MemberUpdateServlet extends HttpServlet {
 		}finally {
 			
 			try {if (stmt!=null) stmt.close();}catch(Exception e) {}
-			try { if( conn!=null) conn.close();}catch(Exception e) {}	
+			
 		}
 		
 		

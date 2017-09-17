@@ -29,10 +29,7 @@ public class MemberDeleteServlet extends HttpServlet {
 			
 			//JDBC 드라이버 등록 및 데이터베이스 연결
 			Class.forName(sc.getInitParameter("driver")); 
-			conn = DriverManager.getConnection(
-					sc.getInitParameter("url"),
-					sc.getInitParameter("username"),
-					sc.getInitParameter("password"));
+			conn = (Connection) sc.getAttribute("Conn");
 			
 			pstmt = conn.prepareStatement(
 					"DELETE FROM MEMBERS WHERE MNO="+ request.getParameter("no") );
@@ -48,7 +45,7 @@ public class MemberDeleteServlet extends HttpServlet {
 			throw new ServletException(); 
 		}finally {
 			try{ if(pstmt!=null) pstmt.close();} catch(Exception e) {throw new ServletException();}
-			try{ if(conn!=null) conn.close();} catch(Exception e) {throw new ServletException();}
+			
 		}
 	}
 }

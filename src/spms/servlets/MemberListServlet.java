@@ -37,11 +37,7 @@ public class MemberListServlet extends HttpServlet {
 
 			//드라이버를 사용하여 MySql 서버와 연결하자.
 
-			conn = DriverManager.getConnection(
-					sc.getInitParameter("url"), //JDBC URL( 드라이버 마다 형식이 다름 )
-					sc.getInitParameter("username"),	// DBMS 사용자 아이디
-					sc.getInitParameter("password"));	// DBMS 사용자 암호
-
+			conn = (Connection) sc.getAttribute("Conn");
 			// 커넥션 객체로 부터  SQL을 던질 객체를 준비하자.
 			stmt = conn.createStatement();
 
@@ -75,7 +71,7 @@ public class MemberListServlet extends HttpServlet {
 		} finally {
 			try {if (rs != null) rs.close();} catch(Exception e) {}
 			try {if (stmt != null) stmt.close();} catch(Exception e) {}
-			try {if (conn != null) conn.close();} catch(Exception e) {}
+			
 		}
 
 	}
