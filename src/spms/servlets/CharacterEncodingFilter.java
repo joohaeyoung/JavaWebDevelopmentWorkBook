@@ -24,8 +24,10 @@ public class CharacterEncodingFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain nextFilter)
 			throws IOException, ServletException {
 		
+		/* 서블릿이 실행되기 전에 해야 할 작업 */
 		request.setCharacterEncoding(config.getInitParameter("encoding"));
 		nextFilter.doFilter(request, response);
+		/* 서블릿이 실행한 후, 클라이언트에게 응답하기 전에 해야할 작업 */
 	}
 	
 	@Override

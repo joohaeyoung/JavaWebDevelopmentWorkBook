@@ -1,29 +1,28 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import spms.vo.Member;
+
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 		
 		Connection conn = null;
 		Statement stmt = null;
@@ -52,26 +51,24 @@ public class MemberListServlet extends HttpServlet {
 							" FROM MEMBERS" +
 					" ORDER BY MNO ASC");
 
-			//서버에 가져온 데이터를 사용하여 HTML을 만들어서 웹 브라우저로 출력하자.
 			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.println("<html><head><title>회원목록</title></head>");
-			out.println("<body><h1>회원목록</h1>");
-
-			out.println("<p><a href='add'>신규회원</a><p>");
-
+			
+			ArrayList<Member> members = new ArrayList<Member>();			
 			while(rs.next()) {
-
-				out.println(
-						rs.getInt("MNO") + "," +
-								"<a href='update?no=" + rs.getInt("MNO")+"'>"+
-								rs.getString("MNAME") +"</a>," +
-								rs.getString("EMAIL") + "," + 
-								rs.getDate("CRE_DATE") +
-								"<a href='delete?no="+ rs.getInt("MNO")+ "'>삭제</a>"+"<br>"
+				members.add(new Member().setNo(rs.getInt("MNO"))
+										.setName(rs.getString("MNAME"))
+										.setEmail(rs.getString("EMAIL"))
+										.setCreateDate(rs.getDate("CRE_DATE"))			
 						);
 			}
-			out.println("</body></html>");
+			// requset에 회원 목록 데이터를 보관한다
+			request.setAttribute("members",members);
+			
+			//JSP로 출력을 위임한다.
+			
+			RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
+			rd.include(request, response);
+			
 		} catch (Exception e) {
 			throw new ServletException(e);
 
