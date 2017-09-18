@@ -8,26 +8,23 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+@SuppressWarnings("serial")
 public class AppInitServlet extends HttpServlet {
-	
+
 	@Override
-	public void init( ServletConfig config ) throws ServletException{
-		
-		System.out.println("AppInitServlet 준비...");
+	public void init(ServletConfig config) throws ServletException {
+		System.out.println("AppInitServlet 준비…");
 		super.init(config);
-		
 		try {
 			ServletContext sc = this.getServletContext();
 			Class.forName(sc.getInitParameter("driver"));
 			Connection conn = DriverManager.getConnection(
-					
-					sc.getInitParameter("url"),
-					sc.getInitParameter("username"),
-					sc.getInitParameter("password"));
+						sc.getInitParameter("url"),
+						sc.getInitParameter("username"),
+						sc.getInitParameter("password"));
 			
-			sc.setAttribute("Conn", conn);
-			
-		}catch(Throwable e) {
+			sc.setAttribute("conn", conn);
+		} catch(Throwable e) {
 			throw new ServletException(e);
 		}
 	}
@@ -36,13 +33,13 @@ public class AppInitServlet extends HttpServlet {
 	public void destroy() {
 		System.out.println("AppInitServlet 마무리...");
 		super.destroy();
-		Connection conn = (Connection)this.getServletContext().getAttribute("Conn");
-		
+		Connection conn = 
+				(Connection)this.getServletContext().getAttribute("conn"); 
 		try {
-			if( conn!=null && conn.isClosed()==false) {
+			if (conn != null && conn.isClosed() == false) {
 				conn.close();
 			}
-		}catch(Exception e) {}
+		} catch (Exception e) {}
+		
 	}
-	
 }

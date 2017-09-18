@@ -3,7 +3,7 @@ package spms.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,38 +14,33 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/member/delete")
 public class MemberDeleteServlet extends HttpServlet {
-	
+	private static final long serialVersionUID = 1L;
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		request.setCharacterEncoding("UTF-8");
-	
-		
+	public void doGet(
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		Connection conn = null;
-		PreparedStatement pstmt= null;
-		
+		Statement stmt = null;
+
 		try {
 			ServletContext sc = this.getServletContext();
 			
-			//JDBC 드라이버 등록 및 데이터베이스 연결
-			Class.forName(sc.getInitParameter("driver")); 
-			conn = (Connection) sc.getAttribute("Conn");
-			
-			pstmt = conn.prepareStatement(
-					"DELETE FROM MEMBERS WHERE MNO="+ request.getParameter("no") );
-			
-			pstmt.executeUpdate();
-			
-			
+			conn = (Connection)sc.getAttribute("conn"); 
+			stmt = conn.createStatement();
+			stmt.executeUpdate(
+					"DELETE FROM MEMBERS WHERE MNO=" + 
+					request.getParameter("no"));
 			
 			response.sendRedirect("list");
 			
+		} catch (Exception e) {
+			throw new ServletException(e);
 			
-		}catch(Exception e) {
-			throw new ServletException(); 
-		}finally {
-			try{ if(pstmt!=null) pstmt.close();} catch(Exception e) {throw new ServletException();}
-			
+		} finally {
+			try {if (stmt != null) stmt.close();} catch(Exception e) {}
+			//try {if (conn != null) conn.close();} catch(Exception e) {}
 		}
+
 	}
 }
