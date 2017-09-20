@@ -27,6 +27,7 @@ public class CharacterEncodingFilter implements Filter{
 		/* 서블릿이 실행되기 전에 해야 할 작업 */
 		request.setCharacterEncoding(config.getInitParameter("encoding"));
 		nextFilter.doFilter(request, response);
+		System.out.println("인코딩설정");
 		/* 서블릿이 실행한 후, 클라이언트에게 응답하기 전에 해야할 작업 */
 	}
 	
